@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/icon.png') }}">
+    <title>SAE 2.01</title>
+</head>
+<header>
+    <div id="perso">
+        <p>Tran Jérôme, Neves Sousa Leandro, Ginisty Alexandre, Kathim Rayane, Alves Axel</p>
+        <p>BUT informatique de Créteil-Vitry</p>
+        <p>Année 2022-2023</p>
+    </div>
+    <img id="logo" src="{{ url_for('static', filename='assets/image.png') }}" alt="" srcset="">
+</header>
+<br>
+
+<body>
+    <!-- Présentation -->
+    <div id="presentation">
+        <!-- chaques lettre est un span qui va aller dans le css qui vont subir une animation de 360 degres -->
+        <h1 class="waviy"><h1 class="wavy">
+            <span>A</span>
+            <span>p</span>
+            <span>p</span>
+            <span>l</span>
+            <span>i</span>
+            <span>c</span>
+            <span>a</span>
+            <span>t</span>
+            <span>i</span>
+            <span>o</span>
+            <span>n</span>
+            <span> </span>
+            <span>W</span>
+            <span>e</span>
+            <span>b</span>
+            <span> </span>
+            <span>:</span>
+            <span> </span>
+            <span>S</span>
+            <span>A</span>
+            <span>E</span>
+            <span>2</span>
+            <span>.</span>
+            <span>0</span>
+            <span>1</span>
+          </h1>
+        <p class="center">Cette SAE consiste à déployer un outil de visualisation du trajet le plus rapide entre deux station de
+        metro donné par un utilisateur a partir de l'algorithme de Bellman-Ford.</p>
+    </div>
+
+    <!-- Partie 1: Map -->
+    <h2>Map interractive:</h2>
+    <div class="center">
+        <iframe src="{{ url_for('static', filename='map.html') }}" frameborder="0" id="map"></iframe>
+        <div id="filtre">
+            <!-- Toutes les couleurs des lignes sont afficher dans ce questionnaires de filtrage d'affichage de la map-->
+            <h3>FILTRAGE</h3>
+            <forme id="filtrage">
+                <label id="gras">TOUT AFFICHER</label><input type="checkbox" id="checkbox_all" name="Ligne" value="all" checked><br>
+                <label><i style="color: #FFCE00;">&#x25CF;</i>&nbsp;Ligne 1</label><input type="checkbox" name="Ligne" value=1 checked><br>
+                <label><i style="color: #0064B0;">&#x25CF;</i>&nbsp;Ligne 2</label><input type="checkbox" name="Ligne" value=2 checked><br>
+                <label><i style="color: #9F9825;">&#x25CF;</i>&nbsp;Ligne 3</label><input type="checkbox" name="Ligne" value=3 checked><br>
+                <label><i style="color: #C04191;">&#x25CF;</i>&nbsp;Ligne 4</label><input type="checkbox" name="Ligne" value=4 checked><br>
+                <label><i style="color: #F28E42;">&#x25CF;</i>&nbsp;Ligne 5</label><input type="checkbox" name="Ligne" value=5 checked><br>
+                <label><i style="color: #83C491;">&#x25CF;</i>&nbsp;Ligne 6</label><input type="checkbox" name="Ligne" value=6 checked><br>
+                <label><i style="color: #F3A4BA;">&#x25CF;</i>&nbsp;Ligne 7</label><input type="checkbox" name="Ligne" value=7 checked><br>
+                <label><i style="color: #CEADD2;">&#x25CF;</i>&nbsp;Ligne 8</label><input type="checkbox" name="Ligne" value=8 checked><br>
+                <label><i style="color: #D5C900;">&#x25CF;</i>&nbsp;Ligne 9</label><input type="checkbox" name="Ligne" value=9 checked><br>
+                <label><i style="color: #E3B32A;">&#x25CF;</i>&nbsp;Ligne 10</label><input type="checkbox" name="Ligne" value=10 checked><br>
+                <label><i style="color: #8D5E2A;">&#x25CF;</i>&nbsp;Ligne 11</label><input type="checkbox" name="Ligne" value=11 checked><br>
+                <label><i style="color: #00814F;">&#x25CF;</i>&nbsp;Ligne 12</label><input type="checkbox" name="Ligne" value=12 checked><br>
+                <label><i style="color: #98D4E2;">&#x25CF;</i>&nbsp;Ligne 13</label><input type="checkbox" name="Ligne" value=13 checked><br>
+                <label><i style="color: #662483;">&#x25CF;</i>&nbsp;Ligne 14</label><input type="checkbox" name="Ligne" value=14 checked><br>
+                <label><i style="color: #98D4E2;">&#x25CF;</i>&nbsp;Ligne 3b</label><input type="checkbox" name="Ligne" value="3b" checked><br>
+                <label><i style="color: #83C491;">&#x25CF;</i>&nbsp;Ligne 7b</label><input type="checkbox" name="Ligne" value="7b" checked><br></label>
+                <label class="custom-file-uploadf">
+                    <input id="btn_filtre" type="submit" value="Submit"/>
+                    RECHERCHER
+                </label>
+            </forme>
+        </div>
+    </div>
+    <!-- Partie 2: Analyse -->
+
+    <h2>Comparaison entre deux stations:</h2>
+
+    <form id="algo_comparaison"></form>
+
+        <div id="div_station1" class="début">
+            <label for="inputData" style="text-align: center"><strong>ID station source:</strong></label><br>
+            <input type="number" name="station1" id="station1">
+        </div>
+
+        <div id="div_station2" class="fin">
+            <label for="inputData"><strong>ID station destination:</strong></label><br>
+            <input type="number" name="station2" id="station2">
+        </div>
+
+        <div id="div_pdistance" class="fin">
+            <label for="inputData"><strong>P-distance:</strong></label><br>
+            <input type="number" name="p_distance" id="p_distance">
+        </div>
+
+        <div id="div_station3">
+            <label for="inputData"><strong>Station étape:</strong></label><br>
+            <input type="number" name="station_etape" id="station_etape">
+        </div>
+
+            <select id="algorithme" style="position: relative ; bottom: 5px">
+                <option value="None">--   ALGORITHME   --</option>
+                <option value=1>Chemins possible</option>
+                <option value=2>BellmanFord (Map)</option>
+                <option value=3>Accessibilité</option>
+                <option value=4>Arbre couvrant minimun (Map)</option>
+                <option value=5>Relié à p-distance </option>
+                <option value=6>Station proche (Map)</option>
+            </select>
+
+            <label class="custom-file-uploadf" style="position: relative ; bottom: 7px">
+                <input id="btn_1" type="submit" value="Submit"/>
+                Générer
+            </label>
+    </form>
+
+    <div id="graph_stat_globale">
+        <p style="text-align: center ; font-size: 40px">Analyse</p>
+        <div id="accessibilite" >
+            <img id="loading2" src="{{ url_for('static', filename='assets/loading.gif') }}">
+            <p id="loading_message">Cela peut prendre quelques secondes...</p>
+            <ul id="reponse">
+            </ul>
+        </div>
+    </div>
+
+
+    <script>
+        // Fonction pour refresh la map
+        function reload() {
+                document.getElementById('map').src += '';
+            }
+        var formulaire = document.getElementById('filtrage');
+
+
+        // Fonction qui gère le filtrage de la map
+        document.getElementById("btn_filtre").addEventListener('click',function (event){
+            event.preventDefault();
+            var lst_Ligne_coche = []
+            var cases = formulaire.querySelectorAll('input[type="checkbox"][name="Ligne"]:checked');
+            cases.forEach(function(caseCochee) {
+                lst_Ligne_coche.push(caseCochee.value);
+            });
+            $.ajax({
+                    url: '/filtrage',
+                    type: 'POST',
+                    data: {lst_Ligne_coche: JSON.stringify(lst_Ligne_coche),
+                          },
+                    dataType: 'json',
+                success: function(response) {
+                    reload()
+                }
+            })
+
+        })
+
+        // Au chargement de la page
+        $(document).ready(function() {
+
+            // Fonction qui gère les analyses au clic du bouton
+            document.getElementById("btn_1").addEventListener('click',function (event){
+                let choice = [];
+                const algo = document.querySelector("#algorithme");
+                choice.push(algo.selectedIndex)
+
+                var station1 = $('#station1').val();
+                var station2 = $('#station2').val();
+                var distance = $('#p_distance').val();
+                var station_etape = $('#station_etape').val();
+
+                if(choice[0] === 1 || choice[0] === 3 || choice[0] === 5){
+                    if (choice[0] === 3 && distance.trim() === ''){
+                    }else{
+                        document.getElementById("reponse").innerHTML = "";
+                        const loadingDiv = document.getElementById("loading2");
+                        const loadingMessage = document.getElementById("loading_message");
+                        loadingDiv.style.display = "block";
+                        loadingMessage.style.display = "block"
+                    }
+                }
+
+                // On envoie les selections
+                $.ajax({
+                    url: '/algo_comparaison',
+                    type: 'POST',
+                    data: {algo: choice[0],
+                           station1: station1,
+                           station2: station2,
+                           station_etape: station_etape,
+                           distance: distance,
+                          },
+                    dataType: 'json',
+
+                    // Traitement du paquet réponse
+                    success: function(response) {
+                        console.log(response)
+
+                        if(choice[0] === 2 || choice[0] === 4 || choice[0] === 6 ){
+                            reload();
+                        }else if(choice[0] == 1){
+                            const loadingDiv = document.getElementById("loading2");
+                            const loadingMessage = document.getElementById("loading_message");
+
+                            loadingDiv.style.display = "none"
+                            loadingMessage.style.display = "none"
+                            
+                            let cpt= 1
+                            // Afficher les détails de chaque trajet
+                            for (const trajet of response.trajet) {
+                                document.getElementById("reponse").innerHTML += '<li><h3 >'+"Chemin "+ cpt+" : Temps = "+ trajet[1] + " | Nb Station = " + trajet[2] + " | Nb Correspondance = " + trajet[3] +'</h3></li>'
+                                let chemin = ""
+                                chemin = chemin + trajet[0][0]
+                                // Construire le chemin avec les stations et les couleurs des lignes
+                                for (var station_i = 1; station_i < trajet[0].length; station_i++) {
+                                    chemin += ' <div style="display: inline-block">'+ ' <div style="border: 10px solid ' +trajet[4][station_i-1]+' ; width: 150px;display: inline-block; border-radius: 10px"></div> ' + trajet[0][station_i] + '</div>'
+                                }
+                                document.getElementById("reponse").innerHTML += '<div>' + chemin + '<div><br>'
+                                cpt += 1
+                            }
+
+                        }else if (choice[0] === 3){
+                            const loadingDiv = document.getElementById("loading2");
+                            const loadingMessage = document.getElementById("loading_message");
+
+                            loadingDiv.style.display = "none"
+                            loadingMessage.style.display = "none"
+
+                            let chemin_correspondance = ""
+                            let chemin_terminus = ""
+
+                            chemin_correspondance = chemin_correspondance + response.acc[1][0]
+                            chemin_terminus = chemin_terminus + response.term[1][0]
+
+                            for (var i = 1; i < response.acc[1].length; i++) {
+                                chemin_correspondance += ' <div style="display: inline-block">'+ ' <div style="border: 10px solid ' +response.acc[2][i-1]+' ; width: 150px;display: inline-block; border-radius: 10px"></div> ' + response.acc[1][i] + '</div>'
+                            }
+                            // Construire le chemin avec les stations et les couleurs des lignes pour le terminus
+                            for (var k = 1; k < response.term[1].length; k++) {
+                                chemin_terminus  += ' <div style="display: inline-block">'+  '<div style="border: 10px solid ' +response.term[2][k-1]+' ; width: 140px;display: inline-block; border-radius: 10px"></div> ' + response.term[1][k] + '</div>'
+                            }
+                            // Construire le chemin avec les stations et les couleurs des lignes pour le terminus
+                            document.getElementById("reponse").innerHTML += '<li><h3 >'+ response.acc[0] +'</h3></li>'
+                            document.getElementById("reponse").innerHTML += '<div>' + chemin_correspondance + '<div><br>'
+
+                            document.getElementById("reponse").innerHTML += '<li><h3 >'+ response.cen +'</h3></li><br>'
+
+                            document.getElementById("reponse").innerHTML +=   '<li><h3 >'+ response.term[0] +'</h3></li>'
+                            document.getElementById("reponse").innerHTML += '<div>' + chemin_terminus + '<div><br>'
+                       // Construire le chemin avec les stations et les couleurs des lignes pour le terminus
+                        }else if (choice[0] === 5){
+                            const loadingDiv = document.getElementById("loading2");
+                            const loadingMessage = document.getElementById("loading_message");
+                            loadingDiv.style.display = "none"
+                            loadingMessage.style.display = "none"
+
+                            if (response.p_distance === false){
+                                signe = ' >'
+                                color = "red"
+
+                            }else{
+                                signe = " <="
+                                color = "green"
+                            }
+                            // Afficher la distance entre les deux stations
+                            document.getElementById("reponse").innerHTML += '<li><h3 >'+ station1 +" situé à "+ distance+" secondes de " + station2 +": " + '<label style="color:'+color+' ; font-size:30px">'+response.p_distance +'</label>'+'</h3></li><br>'
+
+                            let chemin = ""
+
+                            chemin += response.chemin[0][0]
+
+                            for (var j = 1; j < response.chemin[0].length; j++) {
+                                // Afficher la distance entre les deux stations
+                                chemin += ' <div style="display: inline-block">'+
+                                                ' <div style="border: 10px solid ' +response.color[j-1][0]+' ; width: 150px;display: inline-block; border-radius: 10px">'
+                                                +'</div>' + response.chemin[0][j]+
+                                            '</div>'
+
+                            }
+                            chemin +='<div style="text-align: center;margin-top: 80px;font-size: 50px">'
+                                        +' <label style="color: black">'+response.chemin[1]+'</label>'  + signe + '<label style="color:'+color+'"> '+ distance+'</label>'
+                                   +'</div>'
+
+                            document.getElementById("reponse").innerHTML += '<div>' + chemin + '<div><br>'
+
+
+                        }
+                    }
+                });
+            })
+
+
+            // Fontion qui change le css des inputs pour savoir si il est nécessaire
+            var select = document.getElementById("algorithme");
+
+            select.addEventListener("change",function (){
+                if (select.value === "None" || select.value === "4"){
+                    document.getElementById("div_station1").style.border = "2px solid gray"
+                    document.getElementById("div_station2").style.border = "2px solid gray"
+                    document.getElementById("div_station3").style.border = "2px solid gray"
+                    document.getElementById("div_pdistance").style.border = "2px solid gray"
+                    document.getElementById("div_station1").style.color = "gray"
+                    document.getElementById("div_station2").style.color = "gray"
+                    document.getElementById("div_station3").style.color = "gray"
+                    document.getElementById("div_pdistance").style.color = "gray"
+                }else if (select.value === "1"){
+                    document.getElementById("div_station1").style.border = "3px solid white"
+                    document.getElementById("div_station2").style.border = "3px solid white"
+                    document.getElementById("div_station3").style.border = "2px solid gray"
+                    document.getElementById("div_pdistance").style.border = "2px solid gray"
+                    document.getElementById("div_station1").style.color = "white"
+                    document.getElementById("div_station2").style.color = "white"
+                    document.getElementById("div_station3").style.color = "gray"
+                    document.getElementById("div_pdistance").style.color = "gray"
+                }else if (select.value === "2"){
+                    document.getElementById("div_station1").style.border = "3px solid white"
+                    document.getElementById("div_station2").style.border = "3px solid white"
+                    document.getElementById("div_station3").style.border = "3px solid cyan"
+                    document.getElementById("div_pdistance").style.border = "2px solid gray"
+                    document.getElementById("div_station1").style.color = "white"
+                    document.getElementById("div_station2").style.color = "white"
+                    document.getElementById("div_station3").style.color = "cyan"
+                    document.getElementById("div_pdistance").style.color = "gray"
+                }else if (select.value === "3" || select.value === "5"){
+                    document.getElementById("div_station1").style.border = "3px solid white"
+                    document.getElementById("div_station2").style.border = "3px solid white"
+                    document.getElementById("div_station3").style.border = "2px solid gray"
+                    document.getElementById("div_pdistance").style.border = "3px solid white"
+                    document.getElementById("div_station1").style.color = "white"
+                    document.getElementById("div_station2").style.color = "white"
+                    document.getElementById("div_station3").style.color = "gray"
+                    document.getElementById("div_pdistance").style.color = "white"
+                }else if (select.value === "6"){
+                    document.getElementById("div_station1").style.border = "3px solid white"
+                    document.getElementById("div_station2").style.border = "2px solid gray"
+                    document.getElementById("div_station3").style.border = "2px solid gray"
+                    document.getElementById("div_pdistance").style.border = "2px solid gray"
+                    document.getElementById("div_station1").style.color = "white"
+                    document.getElementById("div_station2").style.color = "gray"
+                    document.getElementById("div_station3").style.color = "gray"
+                    document.getElementById("div_pdistance").style.color = "gray"
+                }
+            })
+
+            // Sélectionnez le premier bouton et tous les autres boutons de la liste
+            var checkAll = document.getElementById('checkbox_all');
+            var checkboxes = document.querySelectorAll('input[type="checkbox"][name="Ligne"]:not([value="all"])');
+
+            // Ajoutez un écouteur d'événement au premier bouton
+            checkAll.addEventListener('change', function() {
+                // Parcourez tous les autres boutons de la liste
+                for (var i = 0; i < checkboxes.length; i++) {
+                    // Cochez ou décochez les autres boutons en fonction de l'état du premier bouton
+                    checkboxes[i].checked = checkAll.checked;
+                }
+            });
+
+        });
+
+    // Fonction qui gère le défilement de la page en fonction de la selection
+    const btn =document.getElementById("btn_1")
+    btn.addEventListener('click', () => {
+        const algo = document.querySelector("#algorithme");
+        var choice = algo.selectedIndex;
+        console.log(choice)
+        if(choice == 2 || choice == 4 || choice == 6 ) {
+            const position = document.getElementById("map")
+            position.scrollIntoView({
+                behavior: "smooth"
+            })
+        }else{
+            const position = document.getElementById("graph_stat_globale")
+            position.scrollIntoView({
+                behavior: "smooth"
+            })
+        }
+    })
+    </script>
+
+</body>
+</html>
